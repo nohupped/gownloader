@@ -69,9 +69,9 @@ func main() {
 			req, _ := http.NewRequest("GET", os.Args[1], nil)
 			var range_hdr string
 			if  i != (threads - 1) {
-				range_hdr = "bytes=" + strconv.Itoa(min) +"-" + strconv.Itoa(max-1) // Add the data for the Range header of the form "bytes=0-100"
+				range_hdr = "bytes=" + strconv.Itoa(min) +"-" + strconv.Itoa(max-1)
 			}else {
-				range_hdr = "bytes=" + strconv.Itoa(min) +"-" + strconv.Itoa(max) // Add the data for the Range header of the form "bytes=0-100"
+				range_hdr = "bytes=" + strconv.Itoa(min) +"-" + strconv.Itoa(max)
 
 			}
 			fmt.Println(range_hdr)
