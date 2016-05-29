@@ -65,7 +65,6 @@ func main() {
 		go func(min int, max int, i int) {
 			slicenum := strconv.Itoa(i)
 			name := "." + filename + "." + slicenum
-			//client := &http.Client {}
 			client := new(http.Client)
 			req, _ := http.NewRequest("GET", os.Args[1], nil)
 			var range_hdr string
