@@ -79,7 +79,7 @@ func main() {
 			resp,_ := client.Do(req)
 			defer resp.Body.Close()
 			reader, _ := ioutil.ReadAll(resp.Body)
-			ioutil.WriteFile("." + name, reader, 0644)
+			ioutil.WriteFile(name, reader, 0644)
 			wg.Done()
 		}(first, last, i)
 	}
