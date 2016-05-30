@@ -51,6 +51,11 @@ func main() {
 	split := length/threads
 	diff := length % threads
 	fmt.Println(split, diff)
+	fmt.Println("Opening file")
+	fs, err := os.OpenFile(path + "/" + filename, os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		panic(err)
+	}
 
 	for i := 0; i < threads ; i++ {
 		wg.Add(1)
@@ -62,9 +67,7 @@ func main() {
 			last += diff
 		}
 
-		go func(min int, max int, i int) {
-			slicenum := strconv.Itoa(i)
-			name := "." + filename + "." + slicenum
+		go func(min int, max int) {
 			client := new(http.Client)
 			req, _ := http.NewRequest("GET", os.Args[1], nil)
 			var range_hdr string
@@ -79,9 +82,17 @@ func main() {
 			resp,_ := client.Do(req)
 			defer resp.Body.Close()
 			reader, _ := ioutil.ReadAll(resp.Body)
-			ioutil.WriteFile(name, reader, 0644)
+
+			if i == 0 {
+				fmt.Println("Seeking to", int64(min-1))
+				fs.Seek(int64(min-1), 0)
+			} else {
+				fmt.Println("Seeking to", int64(min))
+				fs.Seek(int64(min), 0)
+			}
+			fs.Write(reader)
 			wg.Done()
-		}(first, last, i)
+		}(first, last)
 	}
 	wg.Wait()
 }
