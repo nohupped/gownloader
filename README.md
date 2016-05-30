@@ -4,5 +4,4 @@ Run as
 
 ```gownloader http://url.com 3```
 
-Todo:
-combine downloaded files.
+This write to the filename, and each goroutine seeks to its respective offset and starts writing from there.
