@@ -1,7 +1,7 @@
 package main
 
 import (
-	"https://github.com/nohupped/gownloader/imports"
+	"github.com/nohupped/gownloader/imports"
 	"os"
 	"fmt"
 	"net/http"
