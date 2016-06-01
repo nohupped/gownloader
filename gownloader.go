@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"strconv"
 	"sync"
-	"io/ioutil"
 	"strings"
 	"path/filepath"
+	"io/ioutil"
 )
 var wg sync.WaitGroup
 
@@ -50,7 +50,6 @@ func main() {
 	fmt.Println("Content length is", length, "bytes")
 	split := length/threads
 	diff := length % threads
-	fmt.Println(split, diff)
 	fmt.Println("Opening file")
 	fs, err := os.OpenFile(path + "/" + filename, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
@@ -67,7 +66,7 @@ func main() {
 			last += diff
 		}
 
-		go func(min int, max int) {
+		go func(min int, max int, i int) {
 			client := new(http.Client)
 			req, _ := http.NewRequest("GET", os.Args[1], nil)
 			var range_hdr string
@@ -83,16 +82,16 @@ func main() {
 			defer resp.Body.Close()
 			reader, _ := ioutil.ReadAll(resp.Body)
 
-			if i == 0 {
-				fmt.Println("Seeking to", int64(min-1))
-				fs.Seek(int64(min-1), 0)
-			} else {
-				fmt.Println("Seeking to", int64(min))
-				fs.Seek(int64(min), 0)
+
+			fmt.Println("Seeking to", int64(min))
+			fs.Seek(int64(min), 0)
+			bytes, err := fs.Write(reader)
+			if err != nil {
+				panic(fmt.Sprintf("%s\nTry again", err))
 			}
-			fs.Write(reader)
+			fmt.Println("Written", bytes, "bytes")
 			wg.Done()
-		}(first, last)
+		}(first, last, i)
 	}
 	wg.Wait()
 }
